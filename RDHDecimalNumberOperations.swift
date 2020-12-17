@@ -212,3 +212,15 @@ public extension String {
     }
 }
 
+
+public extension NSDecimalNumber {
+    public var countAfterDot: Int {
+        if self == .notANumber {return 0}
+        let substrings = self.stringValue.components(separatedBy: ".")
+        if substrings.count == 2 {
+            return substrings.last!.count
+        } else {
+            return 0
+        }
+    }
+}
