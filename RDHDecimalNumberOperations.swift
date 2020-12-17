@@ -14,11 +14,11 @@ extension NSDecimalNumber: Comparable {
 }
 
 public func == (left: NSDecimalNumber, right: NSDecimalNumber) -> Bool {
-    return left.isEqualToNumber(right)
+    return left.isEqual(to: right)
 }
 
 public func < (left: NSDecimalNumber, right: NSDecimalNumber) -> Bool {
-    return left.compare(right) == NSComparisonResult.OrderedAscending
+    return left.compare(right) == ComparisonResult.orderedAscending
 }
 
 
@@ -29,19 +29,19 @@ public prefix func + (value: NSDecimalNumber) -> NSDecimalNumber {
 }
 
 public func + (left: NSDecimalNumber, right: NSDecimalNumber) -> NSDecimalNumber {
-    return left.decimalNumberByAdding(right)
+    return left.adding(right)
 }
 
-public func += (inout left: NSDecimalNumber, right: NSDecimalNumber) {
+public func += ( left: inout NSDecimalNumber, right: NSDecimalNumber) {
     left = left + right
 }
 
-public prefix func ++ (inout value: NSDecimalNumber) -> NSDecimalNumber {
-    value += NSDecimalNumber.one()
+public prefix func ++ ( value: inout NSDecimalNumber) -> NSDecimalNumber {
+    value += NSDecimalNumber.one
     return value
 }
 
-public postfix func ++ (inout value: NSDecimalNumber) -> NSDecimalNumber {
+public postfix func ++ ( value: inout NSDecimalNumber) -> NSDecimalNumber {
     let result = value
     ++value
     return result
@@ -50,30 +50,30 @@ public postfix func ++ (inout value: NSDecimalNumber) -> NSDecimalNumber {
 // MARK: Overflow
 
 public func &+ (left: NSDecimalNumber, right: NSDecimalNumber) -> NSDecimalNumber {
-    return left.decimalNumberByAdding(right, withBehavior: LenientDecimalNumberHandler)
+    return left.adding(right, withBehavior: LenientDecimalNumberHandler)
 }
 
 
 // MARK: - Subtraction
 
-public prefix func - (value: NSDecimalNumber) -> NSDecimalNumber {
-    return value * NSDecimalNumber.minusOne
-}
+//public prefix func - (value: NSDecimalNumber) -> NSDecimalNumber {
+//    return value * NSDecimalNumber.minusOne
+//}
 
 public func - (left: NSDecimalNumber, right: NSDecimalNumber) -> NSDecimalNumber {
-    return left.decimalNumberBySubtracting(right)
+    return left.subtracting(right)
 }
 
-public func -= (inout left: NSDecimalNumber, right: NSDecimalNumber) {
+public func -= ( left: inout NSDecimalNumber, right: NSDecimalNumber) {
     left = left - right
 }
 
-public prefix func -- (inout value: NSDecimalNumber) -> NSDecimalNumber {
-    value -= NSDecimalNumber.one()
+public prefix func -- ( value: inout NSDecimalNumber) -> NSDecimalNumber {
+    value -= NSDecimalNumber.one
     return value
 }
 
-public postfix func -- (inout value: NSDecimalNumber) -> NSDecimalNumber {
+public postfix func -- ( value: inout NSDecimalNumber) -> NSDecimalNumber {
     let result = value
     --value
     return result
@@ -82,124 +82,124 @@ public postfix func -- (inout value: NSDecimalNumber) -> NSDecimalNumber {
 // MARK: Overflow
 
 public func &- (left: NSDecimalNumber, right: NSDecimalNumber) -> NSDecimalNumber {
-    return left.decimalNumberBySubtracting(right, withBehavior: LenientDecimalNumberHandler)
+    return left.subtracting(right, withBehavior: LenientDecimalNumberHandler)
 }
 
 
 // MARK: - Multiplication
 
 public func * (left: NSDecimalNumber, right: NSDecimalNumber) -> NSDecimalNumber {
-    return left.decimalNumberByMultiplyingBy(right)
+    return left.multiplying(by: right)
 }
 
-public func *= (inout left: NSDecimalNumber, right: NSDecimalNumber) {
+public func *= ( left: inout NSDecimalNumber, right: NSDecimalNumber) {
     left = left * right
 }
 
 // MARK: Overflow
 
 public func &* (left: NSDecimalNumber, right: NSDecimalNumber) -> NSDecimalNumber {
-    return left.decimalNumberByMultiplyingBy(right, withBehavior: LenientDecimalNumberHandler)
+    return left.multiplying(by: right, withBehavior: LenientDecimalNumberHandler)
 }
 
 
 // MARK: - Division
 
 public func / (left: NSDecimalNumber, right: NSDecimalNumber) -> NSDecimalNumber {
-    return left.decimalNumberByDividingBy(right)
+    return left.dividing(by: right)
 }
 
-public func /= (inout left: NSDecimalNumber, right: NSDecimalNumber) {
+public func /= ( left: inout NSDecimalNumber, right: NSDecimalNumber) {
     left = left / right
 }
 
 
-// MARK: - Powers
-
-/// Give greater precedence than multiplication
-infix operator ** { precedence 155 }
-
-/// Power
-public func ** (left: NSDecimalNumber, right: Int) -> NSDecimalNumber {
-    return left.decimalNumberByRaisingToPower(right)
-}
-
-/// Match all assignment operators
-infix operator **= { associativity right precedence 90 }
-
-/// 2 **= 2 will return 4
-public func **= (inout left: NSDecimalNumber, right: Int) {
-    left = left ** right
-}
-
-// MARK: Overflow
-
-// Match the power operator
-infix operator &** { precedence 155 }
-
-public func &** (left: NSDecimalNumber, right: Int) -> NSDecimalNumber {
-    return left.decimalNumberByRaisingToPower(right, withBehavior: LenientDecimalNumberHandler)
-}
+//// MARK: - Powers
+//
+///// Give greater precedence than multiplication
+//infix operator ** { precedence 155 }
+//
+///// Power
+//public func ** (left: NSDecimalNumber, right: Int) -> NSDecimalNumber {
+//    return left.decimalNumberByRaisingToPower(right)
+//}
+//
+///// Match all assignment operators
+//infix operator **= { associativity right precedence 90 }
+//
+///// 2 **= 2 will return 4
+//public func **= (inout left: NSDecimalNumber, right: Int) {
+//    left = left ** right
+//}
+//
+//// MARK: Overflow
+//
+//// Match the power operator
+//infix operator &** { precedence 155 }
+//
+//public func &** (left: NSDecimalNumber, right: Int) -> NSDecimalNumber {
+//    return left.decimalNumberByRaisingToPower(right, withBehavior: LenientDecimalNumberHandler)
+//}
 
 
 // MARK: - Other
 
-private let LenientDecimalNumberHandler: NSDecimalNumberBehaviors = NSDecimalNumberHandler(roundingMode: NSDecimalNumberHandler.defaultDecimalNumberHandler().roundingMode(), scale: NSDecimalNumberHandler.defaultDecimalNumberHandler().scale(), raiseOnExactness: false, raiseOnOverflow: false, raiseOnUnderflow: false, raiseOnDivideByZero: false)
+private let LenientDecimalNumberHandler: NSDecimalNumberBehaviors = NSDecimalNumberHandler(roundingMode: NSDecimalNumberHandler.default.roundingMode(), scale: NSDecimalNumberHandler.default.scale(), raiseOnExactness: false, raiseOnOverflow: false, raiseOnUnderflow: false, raiseOnDivideByZero: false)
 
-public extension NSDecimalNumber {
-    
-    /// -1
-    public class var minusOne: NSDecimalNumber {
-        struct Lazily {
-            static let minusOne = NSDecimalNumber.zero() - NSDecimalNumber.one()
-        }
-        return Lazily.minusOne
-    }
-    
-    public func isNaN() -> Bool {
-        return self == NSDecimalNumber.notANumber()
-    }
-    
-    public func abs() -> NSDecimalNumber {
-        
-        if (self.isNaN()) {
-            return NSDecimalNumber.notANumber()
-        }
-        
-        if (self >= NSDecimalNumber.zero()) {
-            return self
-        } else {
-            return -self
-        }
-    }
-}
+//public extension NSDecimalNumber {
+//
+//    /// -1
+//    public class var minusOne: NSDecimalNumber {
+//        struct Lazily {
+//            static let minusOne = NSDecimalNumber.zero() - NSDecimalNumber.one()
+//        }
+//        return Lazily.minusOne
+//    }
+//
+//    public func isNaN() -> Bool {
+//        return self == NSDecimalNumber.notANumber()
+//    }
+//
+//    public func abs() -> NSDecimalNumber {
+//
+//        if (self.isNaN()) {
+//            return NSDecimalNumber.notANumber()
+//        }
+//
+//        if (self >= NSDecimalNumber.zero()) {
+//            return self
+//        } else {
+//            return -self
+//        }
+//    }
+//}
 
 // MARK: - Rounding
 
-private let VaraibleDecimalNumberHandler: (roundingMode: NSRoundingMode, scale: Int16) -> NSDecimalNumberBehaviors = { (roundingMode, scale) -> NSDecimalNumberHandler in
+private let VaraibleDecimalNumberHandler: (_ roundingMode: NSDecimalNumber.RoundingMode, _ scale: Int16) -> NSDecimalNumberBehaviors = { (roundingMode, scale) -> NSDecimalNumberHandler in
     
     return NSDecimalNumberHandler(roundingMode: roundingMode, scale: scale, raiseOnExactness: false, raiseOnOverflow: true, raiseOnUnderflow: true, raiseOnDivideByZero: true)
 }
 
-public extension NSRoundingMode {
+public extension NSDecimalNumber.RoundingMode {
  
     public func round(value: NSDecimalNumber, scale: Int16) -> NSDecimalNumber {
-        return value.decimalNumberByRoundingAccordingToBehavior(VaraibleDecimalNumberHandler(roundingMode: self, scale: scale))
+        return value.rounding(accordingToBehavior: VaraibleDecimalNumberHandler(self, scale))
     }
 }
 
-// Act like cast operator
-infix operator ~ { precedence 132 }
-
-/// @returns the rounded number
-public func ~ (left: NSDecimalNumber, right: (roundingMode: NSRoundingMode, scale: Int16)) -> NSDecimalNumber {
-    return right.roundingMode.round(left, scale: right.scale)
-}
-
-/// Rounds the number in place
-public func ~= (inout left: NSDecimalNumber, right: (roundingMode: NSRoundingMode, scale: Int16)) {
-    left = left ~ right
-}
+//// Act like cast operator
+//infix operator ~ { precedence 132 }
+//
+///// @returns the rounded number
+//public func ~ (left: NSDecimalNumber, right: (roundingMode: NSRoundingMode, scale: Int16)) -> NSDecimalNumber {
+//    return right.roundingMode.round(left, scale: right.scale)
+//}
+//
+///// Rounds the number in place
+//public func ~= (inout left: NSDecimalNumber, right: (roundingMode: NSRoundingMode, scale: Int16)) {
+//    left = left ~ right
+//}
 
 
 // MARK: - Creation
@@ -211,3 +211,4 @@ public extension String {
         return NSDecimalNumber(string: self)
     }
 }
+
