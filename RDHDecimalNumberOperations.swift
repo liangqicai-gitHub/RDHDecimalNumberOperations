@@ -223,4 +223,19 @@ public extension NSDecimalNumber {
             return 0
         }
     }
+    
+    public var twoCountAfterDotString: String {
+        if self == .notANumber {return "0.00"}
+        
+        let dotCount = countAfterDot
+        if dotCount == 0 {
+            return self.stringValue + ".00"
+        } else if dotCount == 1 {
+            return self.stringValue + "0"
+        } else if dotCount == 2 {
+            return self.stringValue
+        } else {
+            return String(self.stringValue.prefix(self.stringValue.count - dotCount + 2))
+        }
+    }
 }
